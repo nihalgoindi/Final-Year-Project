@@ -16,7 +16,7 @@ USE_TZ = False
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['188.166.152.174']
+ALLOWED_HOSTS = ['188.166.152.174', 'localhost', '127.0.0.1']
 
 
 # Application definition
