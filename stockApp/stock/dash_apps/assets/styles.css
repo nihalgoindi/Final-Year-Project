@@ -1,0 +1,69 @@
+a.modebar-btn.modebar-btn--logo,
+a.modebar-btn[data-title="Download plot as a png"] {
+    display: none;
+}
+
+body {
+    background: #474747;
+}
+
+.svg-container .main-svg:nth-of-type(1) {
+    background: #353535 !important;
+}
+
+svg text {
+    fill: white !important;
+}
+
+svg .bglayer rect {
+    fill: rgb(49, 49, 49) !important;
+}
+
+svg .gridlayer path {
+    stroke: rgb(82, 82, 82) !important;
+}
+
+#metadata {
+    background: #353535;
+    color: white;
+    padding: 30px;
+}
+
+.metadatalabel {
+    margin-bottom: 0;
+}
+
+#model_prediction,
+#model_accuracy {
+    font-weight: bold;
+    font-size: 2.5rem;
+}
+
+#model_prediction.pred_up {
+    color: #028000;
+}
+
+#model_prediction.pred_down {
+    color: #fe0100;
+}
+
+#form_style {
+    background: #353535;
+    padding: 30px;
+    margin: 30px 0;
+}
+
+button.btn-primary {
+    background-color: #636efa;
+    border-color: #636efa;
+}
+
+button.btn-primary:hover {
+    background-color: #4651d4;
+    border-color: #4651d4;
+}
+
+#forest_feature_importance,
+#tree_feature_importance {
+    margin-top: -50px;
+}

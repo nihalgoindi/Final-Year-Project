@@ -1,0 +1,147 @@
+{% extends 'base.html' %}
+{% block title %}Traditional View{% endblock %}
+
+{% block content %}
+<div class="row ml-4 mr-4">
+  <div class="col-sm-9">
+    <div ref="graph" id="graph" class="card card-main card-body">
+      <div class="row ">
+        <div id="title" class="mr-4 col">Loading...</div>
+        <div class="float-right col text-right">
+          <a class="btn cursor-pointer btn-help" onclick="helpTradDialog()"><span
+              class="material-icons md-22">help_outline</span> Help</a>
+        </div>
+      </div>
+      <div class="card-text mt-0">
+        <br>
+        <div id="errors" class="hide alert alert-danger row " role="alert">
+        </div>
+        <div class="row ml-4">
+          <div class="dropdown">
+            <button id="indDrop" type="button" data-toggle="dropdown" class="btn-black btn-sm" aria-haspopup="true"
+              aria-expanded="false"><i class="material-icons md-18">add_circle</i>
+              Indicator</button>
+            <div class="dropdown-menu" aria-label="indicator drop down">
+              <button aria-label="select candlesticks" class="dropdown-item" onclick="CandleSticks()">CandleSticks</button>
+              <div class="dropdown-divider"></div>
+              <button onclick="openModal(this)" class="dropdown-item dropdown-color" data-code="SMA" >Simple Moving
+                Average</button>
+              <button onclick="openModal(this)" class="dropdown-item dropdown-color" data-code="EMA">Exponential
+                Moving Average</button>
+              <button onclick="openModal(this)" class="dropdown-item dropdown-color" data-code="MOM">Momentum</button>
+              <button onclick="openModal(this)" class="dropdown-item dropdown-color" data-code="ROC">Rate of
+                Change</button>
+              <button onclick="openModal(this)" class="dropdown-item dropdown-color" data-code="RSI">Relative strength
+                index</button>
+              <button onclick="openModal(this)" class="dropdown-item dropdown-color" data-code="ATR">Average True
+                Range</button>
+              <button onclick="openModal(this)" class="dropdown-item dropdown-color" data-code="BBANDS" data-inputs="2"
+                data-inputname="Standard Deviation">Bollinger Bands</button>
+            </div>
+          </div>
+          <input id="daterange" aria-label="daterange selector" class="frm-text mr-1 ml-1">
+          <select class="frm-text" aria-label="timeframe selector" id="timeFrame">
+            <option value="1">1M</option>
+            <option value="5">5M</option>
+            <option value="15">15M</option>
+            <option value="30">30M</option>
+            <option value="60">60M</option>
+            <option selected value="D">Day</option>
+            <option value="W">Week</option>
+            <option value="M">Month</option>
+          </select>
+          <button class="btn-black btn-sm ml-1" id="updatebtn" onclick="update()">
+            <i class="material-icons md-18">refresh</i> Update
+          </button>
+        </div>
+        <div id="indicatorList" class="row ml-4 mr-5 mt-2">
+          <template v-for="(ind,index) in indicators">
+            <button :id="index" v-on:click="removeIndicator(ind)" :class="{ notadded: ind.added == false }"
+              v-bind:style="{ backgroundColor: [[ind.color]], color: [[ind.textcolor]] }"
+              class="btn-sm btn-brdr mr-1 mb-1">
+              <i class="material-icons md-18 bgcolorfont">close</i> [[ind.name]]
+            </button>
+          </template>
+        </div>
+        <div id="graphDIV"></div>
+        <div id="secondGraphDIV" class="hide"></div>
+      </div>
+    </div>
+  </div>
+  <div class="col-sm-3">
+    {% include "stockselector.html" %}
+  </div>
+
+  <!-- Indicator selector -->
+  <div class="modal fade" id="indmodal" role="dialog">
+    <div class="modal-dialog">
+      <!-- Indicator Options-->
+      <div class="modal-content">
+        <div class="modal-header">
+          <h4 id="indTitle" class="modal-title">Modal Header</h4>
+        </div>
+        <div class="modal-body">
+          <div id="indicator-text"></div>
+          <hr>
+          <div class="row ml-2 mb-2"><a id="input-name">Time Period:</a><input type="number" value="2"
+              class="ml-1 number" id="indPeriod" aria-label="indicator time period"></div>
+          <div class="row ml-2"><a id="input-name ">Color1:</a><input aria-label="indicator color1" type="color" id="indColor" class="ml-1"></div>
+          <div id="color2">
+            <div class="row ml-2"><a id="input-name">Color Lower:</a><input aria-label="indicator color2" type="color" id="indColor2" class="ml-1">
+            </div>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <div id="modalerrors" class=" hide alert alert-danger row mt-2" role="alert">
+          </div>
+          <button onclick="addIndicator()" type="button" class="btn btn-default" data-dismiss="modal">Add</button>
+          <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+{% load static%}
+
+<!-- help dialog -->
+<div class="modal fade" id="tradhelpmodal" role="dialog">
+  <div class="modal-dialog modal-wide">
+    <div class="modal-content">
+      <div class="modal-header header">
+        <h4 class="modal-title">How to use Traditional View</h4>
+      </div>
+      <div class="modal-body">
+        1.Select the date range you want to use for the stock, and the data format from the selection box next to
+        it.<br>
+        <img src="{% static 'images\helptrad1.PNG' %}" alt="date selection">
+
+        <hr>
+        2. Add indicators you want to use, by pressing <button id="indDrop" type="button" data-toggle="dropdown"
+          class="btn-black btn-sm" aria-haspopup="true" aria-expanded="false"><i
+            class="material-icons md-18">add_circle</i>
+          Indicator</button>
+
+        <hr>
+        3. Search for the stock you want to see, in the search panel and click on it to select it.
+        <hr>
+        4. If you want to add new indicators on the same stock then add the indicators and press <button
+          class="btn-black btn-sm ml-1" onclick="update()"><i class="material-icons md-18">refresh</i> Update </button>
+        to add the new indicators to the graph.
+        <hr>
+        Notes: <br>
+        Remove indicators by clicking on the indicator name box.<br>
+        Play around with multiple indicators and the graph to find patterns in the data.<br>
+        Click Update after you added new indicators.<br>
+        If accessing data too frequently or at a large range then the update can fail. <br>
+      </div>
+    </div>
+  </div>
+</div>
+<!-- Traditional JS-->
+<script type="text/javascript" src="{% static 'js/traditional.js' %}"></script>
+
+<script>
+  var srchURL = "{% url 'search' %}";
+  var graphURL = "{% url 'getGraph' %}";
+</script>
+{% endblock %}

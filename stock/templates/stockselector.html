@@ -1,0 +1,86 @@
+<!-- StockSelector INCLUDE -->
+
+<div id="searchResult" class="">
+    <div class="card card-main card-body pb-2">
+        <div class="row">
+            <input id="searchField" class="col-sm-7 mr-1 ml-1 form-control" type="search" placeholder="Find..."
+                aria-label="search" name="ticker">
+            <button id="srchbtn" class="btn btn-outline-secondary col-sm-4" type="submit"
+                v-on:click="search">Search</button>
+        </div>
+
+        {% if selectors %}
+        <div id="searchSelectors" class="row mt-1">
+            <input id="daterange" class="frm-text col-sm-7 mr-1 ml-1">
+            <select class="frm-text col-sm-4" id="timeFrame">
+                <option value="30">30M</option>
+                <option value="60">60M</option>
+                <option selected value="D">Day</option>
+                <option value="W">Week</option>
+                <option value="M">Month</option>
+            </select>
+        </div>
+        {% endif %}
+        <hr class="mt-3 mb-2">
+        <div class="mb-0">
+            <div v-if="!haveresults">
+                <div class="card w-100 mb-2 card-body alert alert-danger">
+                    <div class="row">
+                        <a class="text-left mr-2">[[errormsg]]</a>
+                    </div>
+                </div>
+            </div>
+            <template v-for="item in stocks">
+                <button :id='[[item.symbol]]' :class="{clickedSymb:item.symbol == selected, oldClickedSymb:item.old}"
+                    class="card w-100 mb-2 card-body searchItem"
+                    @click="$set(item, 'old', true); selected = item.symbol" onclick="selectStock(this.id)">
+                    <div class="row">
+                        <a class="text-left mr-2">[[item.symbol]]</a>
+                        <a class="">[[item.exchange]]</a>
+                    </div>
+                    <div class=" row text-left">[[item.name]]</div>
+                </button>
+            </template>
+            <div class="float-right text-right">
+                <a class="cursor-pointer  font-help" onclick="helpSearchDialog()"><span
+                        class="material-icons md-22">help_outline</span> How to Search</a>
+            </div>
+        </div>
+    </div>
+</div>
+{% load static%}
+
+<!-- help dialog -->
+<div class="modal fade" id="searchHelpDialog" role="dialog">
+    <div class="modal-dialog modal-wide">
+        <div class="modal-content">
+            <div class="modal-header header">
+                <h4 class="modal-title">How to Search</h4>
+            </div>
+            <div class="modal-body">
+                {% if selectors %}
+                0.Select the date range you want to use for the stock, and the data format from the selection box next
+                to
+                it.<br>
+                <img src="{% static 'images\helpsearch.PNG' %}" alt="date selection">
+                <hr>
+                {% endif %}
+                1. Enter the name of the company or the Symbol for the companies stock and press enter or search.
+                <hr>
+                2. Click on the company You want to use, recently clicked companies will be light purple out and the
+                current will be dark puple with white text.
+                <hr>
+                Notes: <br>
+                You can still click on colored items, its just there to remind you what has been pressed.
+                If the symbols database is empty, finding a symbol might take some time.<br>
+                If nothing is found, find the companies symbol online and enter it.<br>
+                Only the USA market is made available. <br>
+                Colors for the indicator graph are random. <br>
+                It may appear that stock is not bought at an exact cross due to the lines being interpolated while the
+                actual data is used. <br>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- StockSelector JS-->
+<script type="text/javascript" src="{% static 'js/stockselector.js' %}"></script>

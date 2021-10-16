@@ -1,0 +1,605 @@
+{% extends 'base.html' %}
+{% block title %}Rule Builder{% endblock %}
+
+{% block content %}
+{% if not user.is_authenticated %}
+<div class="alert alert-warning alert-dismissible fade show  mr-4 ml-4" role="alert">
+    You need to <a class="linkc alert-link text-light-thick" href="{% url 'login' %}">Login</a> or <a
+        class="linkc alert-link text-light-thick" href="{% url 'signup' %}">Register</a> to save rules and strategies
+    permanently.
+    <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+        <span aria-hidden="true">&times;</span>
+    </button>
+</div>
+
+{% endif %}
+
+<div class="row ml-2 mr-1">
+    <a class="btn btn-outline-secondary col-sm-4" href="{% url 'viewMLData' %}" target="_blank">View Saved Data</a>
+</div>
+
+<div class="row ml-2 mr-1">
+    <ul class="nav nav-tabs pl-3 mt-1">
+        <li class="nav-item">
+            <a class="nav-link active" data-toggle="tab" href="#ruleBuilder">1.Rule Builder</a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link" id="stratBuilder" data-toggle="tab" href="#strategyBuilder">2.Strategy Builder</a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link" data-toggle="tab" href="#strategyTester">3.Strategy Tester</a>
+        </li>
+    </ul>
+    <div class="btn cursor-pointer btn-help mt-2" onclick="ruleHelp()"><span
+            class="material-icons md-22">help_outline</span> Help</div>
+
+</div>
+<div class="tab-content">
+    <div class="tab-pane active single-screen" id="ruleBuilder">
+        <div class="ml-2 mr-2 mt-2 row">
+            <div class="col-sm-3">
+                <div class="rule-list">
+                    <div class="rule-seperator">Indicators</div>
+                    <div class="rule-holder mb-1">
+                        <div data-code="SMA" data-drop=".indicator" class="rule-block rule-drag indicator">
+                            Simple Moving Average
+                            <div hidden id="extra">
+                                <a class="">Period: </a><input data-value="true" type="number" value="2"
+                                    class="number frm-text">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="rule-holder mb-1">
+                        <div data-code="EMA" data-drop=".indicator" class="rule-block rule-drag indicator">
+                            Exponential Moving Average
+                            <div hidden id="extra">
+                                <a class="">Period: </a><input data-value="true" type="number" value="2"
+                                    class="number frm-text">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="rule-holder mb-1">
+                        <div data-code="MOM" data-drop=".indicator" class="rule-block rule-drag indicator">
+                            Momentum
+                            <div hidden id="extra">
+                                <a class="">Period: </a><input data-value="true" type="number" value="2"
+                                    class="number frm-text">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="rule-holder mb-1">
+                        <div data-code="ROC" data-drop=".indicator" class="rule-block rule-drag indicator">
+                            Rate of Change
+                            <div hidden id="extra">
+                                <a class="">Period: </a><input data-value="true" type="number" value="2"
+                                    class="number frm-text">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="rule-holder mb-1">
+                        <div data-code="RSI" data-drop=".indicator" class="rule-block rule-drag indicator">
+                            Relative Strength Index
+                            <div hidden id="extra">
+                                <a class="">Period: </a><input data-value="true" type="number" value="2"
+                                    class="number frm-text">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="rule-holder mb-1">
+                        <div data-code="ATR" data-drop=".indicator" class="rule-block rule-drag indicator">
+                            Average True Range
+                            <div hidden id="extra">
+                                <a class="">Period: </a><input data-value="true" type="number" value="2"
+                                    class="number frm-text">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="rule-holder mb-1">
+                        <div data-code="BBANDS" data-drop=".indicator" class="rule-block rule-drag indicator ">
+                            Bollinger Bands
+                            <div hidden id="extra">
+                                <a class="">Period: </a><input data-value="true" type="number" value="2"
+                                    class="number frm-text">
+                                <select data-value="true" class="frm-text" id="Band">
+                                    <option selected value="U">Upper Band</option>
+                                    <option value="L">Lower Band</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="rule-holder mb-1">
+                        <div data-code="NUM" data-drop=".indicator"
+                            class="rule-block rule-drag indicator special-rule mx-auto ">
+                            Number
+                            <div hidden id="extra">
+                                <input data-value="true" type="number" value="0" class="number frm-text">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="rule-holder mb-2">
+                        <div data-code="STOCK" data-drop=".indicator"
+                            class="rule-block rule-drag indicator special-rule">
+                            Stock Data
+                            <div hidden id="extra">
+                                Type:
+                                <select data-value="true" class="frm-text" id="Band">
+                                    <option value="C">Close</option>
+                                    <option selected value="O">Open</option>
+                                    <option value="H">High</option>
+                                    <option value="L">Low</option>
+                                    <option value="V">Volume</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="rule-seperator">Comparators</div>
+                    <div class="row row mb-2 mr-1 ml-1">
+                        <div class="rule-holder col-sm-6 ">
+                            <div data-code="CROSS" data-drop=".comparison"
+                                class=" mx-auto  rule-block rule-drag comparison">
+                                Crosses
+                                <div hidden id="extra">
+                                    From:
+                                    <select data-value="true" class="frm-text" id="from">
+                                        <option selected value="A">Above</option>
+                                        <option value="B">Below</option>
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="rule-holder col-sm-6 ">
+                            <div data-code="==" data-drop=".comparison"
+                                class=" mx-auto rule-block rule-drag comparison">
+                                Equals
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row mb-2 mr-1 ml-1">
+                        <div class="rule-holder col-sm-6 ">
+                            <div data-code=">" data-drop=".comparison" class="mx-auto rule-block rule-drag comparison">
+                                Greater than
+                            </div>
+                        </div>
+                        <div class="rule-holder col-sm-6">
+                            <div data-code="<" data-drop=".comparison"
+                                class=" mx-auto rule-block rule-drag comparison ">
+                                Less than
+                            </div>
+                        </div>
+                    </div>
+                    <div class="rule-seperator">Connectors</div>
+                    <div class="row  mb-2 mr-1 ml-1"">
+                        <div class=" rule-holder col-sm-6 ">
+                            <div data-code="*AND" data-drop=".connector"
+                        class="rule-block mr-1 connector-style rule-drag connector mx-auto ">
+                        AND
+                    </div>
+                </div>
+                <div class="rule-holder col-sm-6">
+                    <div data-code="*OR" data-drop=".connector"
+                        class="connector connector-style rule-block rule-drag mx-auto ">
+                        OR
+                    </div>
+                </div>
+            </div>
+            <div class="rule-seperator">Final</div>
+            <div class="row mb-2 mr-1 ml-1"">
+                        <div class=" rule-holder col-sm-6 ">
+                            <div data-code="BUY" data-drop=".final" data
+                class="buy mr-1 rule-block rule-drag connector final mx-auto ">
+                BUY
+                <div hidden id="extra">
+                    Strength: <input data-value="true" type="number" value="1" class="number frm-text">
+                </div>
+            </div>
+        </div>
+        <div class="rule-holder col-sm-6">
+            <div data-code="SELL" data-drop=".final" class="sell  rule-block rule-drag connector final mx-auto ">
+                SELL
+                <a hidden id="extra">
+                    Strength: <input data-value="true" type="number" value="1" class="number frm-text">
+                </a>
+            </div>
+        </div>
+    </div>
+</div>
+</div>
+<div class="col-sm-5 ">
+    <div class="row-no-gutters">
+        <button onclick="clearRuleBuilder(this)" class="btn-dark btn-sm">Clear</button>
+        <button id="savebtn" onclick="saveRule()" disabled class="btn-sm btn-dark">Save</button>
+        <a id="errorMSG" hidden class="ml-2 rule-error">Enter Rule Name</a>
+    </div>
+    <div id="rule-builder" class="rule-builder">
+        <div class="rule-style mt-2">
+            <input class="rule-start" id="rulename" placeholder="Enter rule name...">
+        </div>
+        <div class="rule-drop dropzone">DROP:<br> Indicator</div>
+    </div>
+</div>
+<div id="ruleLists" class="col-sm-4">
+    <div class="rulesContainer buy-body mb-4" id="buyRules">
+        <div class="rulesHeader buy-header">Buy Rules</div>
+        <template v-for="(item,index) in items">
+            <div class="btn-sm btn-buy mt-1 textcutoff">
+                <div class="row">
+                    <div class="col-7 textcutoff">[[item.name]]</div>
+                    <div class="col-5 text-right">
+                        <div v-on:click="edit(item,index)" class="ml-1 float-right cursor-pointer btn-del-rule">
+                            <a class="material-icons md-18">edit</a>
+                        </div>
+                        <div v-on:click="remove(item,index)" class="float-right cursor-pointer btn-del-rule">
+                            <a class="material-icons md-18">close</a> Remove
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </template>
+    </div>
+    <div class="rulesContainer sell-body" id="sellRules">
+        <div class="rulesHeader sell-header">Sell Rules</div>
+        <template v-for="(item,index) in items">
+            <div class="btn-sm btn-sell mt-1 textcutoff">
+                <div class="row">
+                    <div class="col-7 textcutoff">[[item.name]]</div>
+                    <div class="col-5 text-right">
+                        <div v-on:click="edit(item,index)" class="ml-1 float-right cursor-pointer btn-del-rule">
+                            <a class="material-icons md-18">edit</a>
+                        </div>
+                        <div v-on:click="remove(item,index)" class="float-right cursor-pointer btn-del-rule">
+                            <a class="material-icons md-18">close</a> Remove
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </template>
+    </div>
+</div>
+</div>
+</div>
+<div class="tab-pane fade" id="strategyBuilder">
+    <div class="tab-pane mt-2 active single-screen">
+        <div class="ml-2 mr-2 row">
+            <div class="col-sm-3">
+                <div id="stratRules" class="rule-list">
+                    <div class="rule-seperator">Logic</div>
+                    <div class="rule-holder mb-2 mx-1">
+                        <div data-code="STOP" data-drop=".final" class="rule-block rule-drag rule final">
+                            END STRATEGY
+                        </div>
+                    </div>
+
+                    <div class="buy-body pb-2">
+                        <div class="stratHeader buy-header">Buy Rules</div>
+                        <template v-for="(item,index) in buyRules">
+                            <div class="rule-holder">
+                                <div data-code="BUYRULE" :data-rule='item.rule' data-drop=".rule"
+                                    class="btn-sm btn-buy mt-1 rule-drag rule buyrule textcutoff">
+                                    [[item.name]]
+                                </div>
+                            </div>
+                        </template>
+                    </div>
+                    <div class="sell-body pb-2">
+                        <div class="stratHeader sell-header">Sell Rules</div>
+                        <template v-for="(item,index) in sellRules">
+                            <div class="rule-holder">
+                                <div data-code="SELLRULE" :data-rule='item.rule' data-drop=".rule"
+                                    class="btn-sm btn-sell mt-1 rule-drag rule sellrule textcutoff">
+                                    [[item.name]]
+                                </div>
+                            </div>
+                        </template>
+                    </div>
+                </div>
+            </div>
+            <div class="col-sm-4">
+                <div class="row-no-gutters">
+                    <button onclick="clearStrategyBuilder(this)" class="btn-dark btn-sm">Clear</button>
+                    <button id="saveStratbtn" onclick="saveStrategy()" disabled class="btn-sm btn-dark">Save</button>
+                    <a id="stratErrorMSG" hidden class="ml-2 rule-error">Enter Strategy Name</a>
+                </div>
+                <div id="strat-builder" class="rule-builder">
+                    <div class="rule-style mt-2">
+                        <input class="rule-start" id="strategyname" placeholder="Enter strategy name...">
+                    </div>
+                    <div class="strat-drop dropzone">DROP:<br> Rules or Logic</div>
+                </div>
+            </div>
+            <div class="col-sm-4">
+                <div id="allStrategies" class="rulesContainer strat-body">
+                    <div class="rulesHeader strat-header">Strategies</div>
+                    <template v-for="(item,index) in items">
+                        <div class="btn-sm btn-strat mt-1 textcutoff">
+                            <div class="row">
+                                <div class="col-7 textcutoff">[[item.name]]</div>
+                                <div class="col-5 text-right">
+                                    <div v-on:click="edit(item,index)"
+                                        class="ml-1 float-right cursor-pointer btn-del-rule">
+                                        <a class="material-icons md-18">edit</a>
+                                    </div>
+                                    <div v-on:click="remove(item,index)"
+                                        class="float-right cursor-pointer btn-del-rule">
+                                        <a class="material-icons md-18">close</a> Remove
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </template>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="tab-pane fade" id="strategyTester">
+    <div class="row ml-2 mt-2 ">
+        <div class="col-12 selectwidth">
+            <div class="card">
+                <div class="style-header text-center">Select Strategy and Stock</div>
+                <div class="card-body">
+                    <div class="row ml-2 mb-1">
+                        <input id="stockSelect" onclick="stockSelector()" class="frm-text ml-1 pb-2 pt-2" type="search"
+                            readonly placeholder="Select Stock">
+                        <input id="stratSelect" onclick="stratSelector()" class="frm-text ml-1 pb-2 pt-2" type="search"
+                            readonly placeholder="Select Strategy">
+                        <input id="moneyInput" type="number" class="ml-1 pb-2 pt-2 frm-text number" placeholder="Money">
+                        <button v-on:click="testStrategy" class=" text-left mr-1 ml-1 btn-dark btn">Test
+                            Strategy</button>
+                    </div>
+                    <div id="testerrors" class="hide alert alert-danger mb-1" role="alert"></div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+    <div class="row ml-2 mr-1 mt-2">
+        <div class="col-md-12 col-lg-3">
+            <div class="card mt-2 mb-2">
+                <div class="style-header">Options</div>
+                <div class="card-body ml-2">
+                    <div class="row mb-1">
+                        <a class="ml-2">Buying Strength threshold:</a> <input id="buyingThreshold" type="number"
+                            value="1" class="number frm-text ml-1">
+                    </div>
+                    <div class="row">
+                        <a class="ml-2">Selling Strength threshold:</a><input id="sellingThreshold" type="number"
+                            value="1" class="number frm-text ml-1">
+                    </div>
+                </div>
+            </div>
+            <div class="card stratld">
+                <div class="style-header">Overview</div>
+                <div class="card-body">
+                    <div class="row ml-1">
+                        Starting value: <a id="stratStartValue" class="ml-1">0<a>
+                    </div>
+                    <div class="row ml-1">
+                        Ending value: <a id="stratEndingValue" class="ml-1">[[money]]<a>
+                    </div>
+                    <div class="row ml-1">
+                        Profit: <a id="stratProfit" class="ml-1">0<a>
+                    </div>
+                    <div class="row ml-1">
+                        % Change: <a id="stratGrowth" class="ml-1">0<a>%
+                    </div>
+                    <div class="row ml-1">
+                        Number of Trades: <a id="tradeCount" class="ml-1">0<a>
+                    </div>
+                    <div class="row">
+                        <div class="col-6">Count Gain: <a id="stratCountGain">0<a></div>
+                        <div class="col-6">Count Loss: <a id="stratCountLoss">0<a></div>
+                    </div>
+                    <div class="row">
+                        <div class="col-6">Biggest Gain: <a id="stratHighestGain">0<a></div>
+                        <div class="col-6">Biggest Loss: <a id="stratHighestLoss">0<a></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col">
+            <div class="card graphcontainer stratld">
+                <div class="graphListHeader">
+                    <ul class="nav nav-tabs">
+                        <li class="nav-item"><a class="nav-link active" data-toggle="tab" href="#overview"
+                                onclick="updateGraphSize('ove')">Overview Graph</a></li>
+                        <li class="nav-item"><a class="nav-link" data-toggle="tab" href="#indicator"
+                                onclick="updateGraphSize('ind')">Indicator Graph</a></li>
+                    </ul>
+                </div>
+                <div class="card-body">
+                    <div class="tab-content">
+                        <div id="overview" class="tab-pane in active">
+                            Overview Graph - Shows the total value of the strategy over-time and the stock
+                            activity.
+                            <div id="stratGraph" class="stratgraph"></div>
+                        </div>
+                        <div id="indicator" class="tab-pane in fade">
+                            Indicator Graph - Shows the used Indicators and the buy and sell points. Note: Lines
+                            are
+                            interpolated so may not show buying at exact cross but instead when its next
+                            available.
+                            <div id="stratGraphindicators" class="stratgraph"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="card mr-4 ml-4 mt-4 stratld">
+        <div class="row mt-1 ml-2">
+            <button id="filterEverything " class="btn-black btn-sm ml-1 mb-1 btn-black-active"
+                onclick="filterEverything(this)">
+                Everything
+            </button>
+            <button id="filterBuyingSelling" class="btn-black btn-sm ml-1 mb-1" onclick="filterBuyingSelling(this)">
+                Buying AND Selling
+            </button>
+            <button id="filterBuying" class="btn-black btn-sm ml-1 mb-1" onclick="filterBuying(this)">
+                Buying Only
+            </button>
+            <button id="filterSelling" class="btn-black btn-sm ml-1 mb-1" onclick="filterSelling(this)">
+                Selling Only
+            </button>
+            <button id="filterSelling" class="btn-black btn-sm ml-1 mb-1" onclick="filterProfit(this)">
+                Profit Only
+            </button>
+            <button id="filterSelling" class="btn-black btn-sm ml-1 mb-1" onclick="filterLoss(this)">
+                Loss Only
+            </button>
+        </div>
+        <table class="table table-sm table-hover">
+            <thead class="thead-dark">
+                <tr>
+                    <th scope="col">Date</th>
+                    <th scope="col">Close</th>
+                    <th scope="col">High</th>
+                    <th scope="col">Low</th>
+                    <th scope="col">Open</th>
+                    <th scope="col">Volume</th>
+                    <th scope="col">BUY/SELL</th>
+                    <th scope="col">Stocks Held</th>
+                    <th scope="col">Value in Stocks</th>
+                    <th scope="col">Cash</th>
+                    <th scope="col">Profit</th>
+                    <th scope="col">Total</th>
+                </tr>
+            </thead>
+            <tbody>
+                <template v-for="row in datadisplay">
+                    <tr :class="{posprofit: row.profit > 0, negprofit: row.profit < 0}">
+                        <td>[[row.date]]</td>
+                        <td>[[row.close]]</td>
+                        <td>[[row.high]]</td>
+                        <td>[[row.low]]</td>
+                        <td>[[row.open]]</td>
+                        <td>[[row.volume]]</td>
+                        <td>[[row.buysell]]</td>
+                        <td>[[row.stockcount]]</td>
+                        <td>[[row.value]]</td>
+                        <td>[[row.money]]</td>
+                        <td>[[row.profit]]</td>
+                        <td>[[row.total]]</td>
+                    </tr>
+                </template>
+            </tbody>
+        </table>
+    </div>
+</div>
+<div class="modal fade" id="stockmodal" role="dialog">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            {% include "stockselector.html" with selectors='true' %}
+        </div>
+    </div>
+</div>
+<div class="modal fade" id="stratmodal" role="dialog">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="">
+                <div id="allStrategies" class="rulesContainer strat-body">
+                    <div class="rulesHeader strat-header">Strategies</div>
+                    <template v-for="(item,index) in items">
+                        <div class="btn-sm btn-strat btn-strat hover mt-1" :id='[[item.name]]'
+                            :data-strategy='[[item.strategy]]'
+                            :class='{clickedSymb:item.symbol == selected, oldClickedSymb:item.old}'
+                            class="card w-100 mb-2 card-body searchItem"
+                            @click="$set(item, 'old', true); selected = item.symbol" onclick='selectStrat(this)'>
+                            [[item.name]]
+                        </div>
+                    </template>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+</div>
+<!-- help dialog -->
+<div class="modal fade" id="ruleHelpDialog" role="dialog">
+    <div class="modal-dialog modal-wide">
+        <div class="modal-content">
+            <div class="modal-header header">
+                <h4 class="modal-title">How to Use The Rule Builder</h4>
+            </div>
+            <div class="modal-body">
+                1.1 Start at number 1 The rule Builder, to build rules drag and drop the blocks that are requested in
+                the Drop Zone, look at the headings under the rule list for which block it represents. <div
+                    class="rule-drop dropzone">DROP:<br> Indicator</div> <br>
+                Then enter the requested information on the blocks to customise how the indicator and comparisons work.
+                <hr>
+                1.2 After Building a basic rule comparison either add a connector: <div class="w-10">
+                    <div data-code="*AND" data-drop=".connector" class="rule-block connector-style connector w-10">AND
+                    </div>
+                    <div></div> or a final block <div data-code="BUY" data-drop=".final" data=""
+                        class="buy rule-block connector final drag-dropped" style="opacity: 1; position: relative;"
+                        data-x="807" data-y="-283">BUY
+                        <div id="extra">Strength: <input data-value="true" type="number" value="1"
+                                class="number frm-text"></div>
+                    </div> The bigger the strength value given, the more this rule will effect the final outcome of the
+                    strategy.
+                    <hr>
+                    1.3 Enter the name of the rule <input class="rule-start" id="" placeholder="Enter rule name..."> and
+                    press Save, Any problems will be shown in an error dialog. Saved rules will be shown on the right of
+                    the screen. <br>
+                    So now create multiple buy and sell rules to use for your trading strategy.
+                    <hr>
+                    2. After creating multiple rule-sets enter the Strategy Builder, here drag and drop the rules you
+                    want to use for the strategy.
+                    <hr>
+                    2.1 When all the rules are selected, drag the end strategy block to show that the strategy is
+                    finished, then name the strategy and it will be saved onto the right hand side.
+                    <hr>
+                    3.1 In the strategy tester, select the stock, the strategy and input the amount of money you want to
+                    test. <br>
+                    Note the buying strength threshold and selling strength threshold that will buy and sell when the
+                    strength of all indicators combined is or exceeds that value. <br>
+                    Now press <button class=" text-left mr-1 ml-1 btn-dark btn">Test Strategy</button> to see it in
+                    action.
+                    <hr>
+                    3.2 Any problems will come up as a red warning box. If everything is correct all the remaining cards
+                    will be visible.
+                    <hr>
+                    3.3 The side overview panel will give key information about the strategy and how well it has
+                    performed, if it has made profit or a loss. <br>
+                    Then there are 2 graphs available to analyse the strategy, the first is an overview graph that shows
+                    the total value over time and the trading activity.<br>
+                    Trading activity markers work as follows: <br>
+                    Green pluses show that stocks were bought at this point, hover your mouse to find out more
+                    information.<br>
+                    Yellow squares signify that stock is currently being held but nothing has happened to them yet.<br>
+                    Up Red triangles with green stroke represent that stocks were sold and made a profit.<br>
+                    Down Red Triangles with a red outline represent that a stock was sold but made a loss.
+                    <hr>
+                    3.4 The second graph, is the indicator graph that can be clicked on to show all the indicators
+                    involved and the overlay of the stock activity on top.
+                    <hr>
+                    3.5 The final card is a table of every stock point that was considered for this strategy, there are
+                    filter buttons above that allow you to click and show only the rows that are significant to you.
+                    <br>
+                    red rows signify a loss has been made on this point.<br>
+                    green rows signify that a gain has been made on this point.
+                    <hr>
+                    4. Finally you can now adjust your rules, your strategy by editing on creating new rules, or try the
+                    strategy on a different stock to see how well it will perform.
+                    <hr>
+                    Notes:<br>
+                    If the strategy does not have any buy and sell points and is a flat value line, it means that the
+                    strategy did not have a single buy, review the indicator graph and table to see the buy and sell
+                    values then change the rules that were added to the strategy.
+                    <br>
+                    If the begining money value is less than the cost of stock, then a purchase cannot be made so it
+                    will contain a flat value again. <br>
+                    Stocks are only bought when enough money exists for the price of the stock, so sometimes another
+                    stock may be bought before stock is sold.<br>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- RuleBuilder JS-->
+    {% load static%}
+    <script type="text/javascript" src="{% static 'js/ruleBuilder.js' %}"></script>
+
+    <script type=text/javascript> var srchURL="{% url 'search' %}" ; var ruleURL="{% url 'getRules' %}" ; var
+        testStratURL="{% url 'testStrategy' %}" ; var sendRuleURL="{% url 'saveRule' %}" ; var
+        sendRuleRemoveURL="{% url 'deleteRule' %}" ; var sendStratURL="{% url 'saveStrat' %}" ; var
+        sendStratRemoveURL="{% url 'deleteStrat' %}" ; </script> {% endblock %}

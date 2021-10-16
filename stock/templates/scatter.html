@@ -1,0 +1,139 @@
+{% extends 'base.html' %}
+{% block title %}Connected Scatterplots{% endblock %}
+
+{% block content %}
+<div class="mr-4 ml-4 " id="scatterplot">
+    <div class="row mr-1 ml-1 mx-auto">
+        <div class="mx-auto">
+            <div class="card scatwidth">
+                <div class="style-header pt-1 pb-1">
+                    <div class="row">
+                        <a class="mr-4 col">Create Scatterplot</a>
+                        <div class=" mr-3 text-right row">
+                            <button id="hidebtn" onclick="helpScatter()" class="btn-sm btn-black pt-0 pb-0 mr-1"> <i
+                                    onclick="helpScatter()" class="material-icons md-18">help_outline</i><a>How to
+                                    use</a></button>
+                            <button id="hidebtn" onclick="togglehide()" class="btn-sm btn-close mr-1"> <i id="hideicon"
+                                    onclick="togglehide()" class="material-icons md-18">keyboard_arrow_up</i><a
+                                    id="hidetext">Hide</a></button>
+                        </div>
+                    </div>
+                </div>
+                <div id="scatterbody" class="card-body zero-tb">
+                    <div class="card-text mt-1">
+                        <div class="row mt">
+                            <input class="frm-text mb-1 w-100" id="scattername" placeholder="Enter Scatterplot name...">
+                        </div>
+                        <div class="row">
+                            <input id="stockSelect" onclick="stockSelector()" class="frm-text pb-1 pt-1 mr-1"
+                                type="search" readonly placeholder="Select Stock">
+                            <select class="frm-text" id="stock1">
+                                <option value="SMA">Simple Moving Average</option>
+                                <option value="EMA">Exponential Moving Average</option>
+                                <option value="BBANDS" data-UL="U">Bollinger Band Upper</option>
+                                <option value="BBANDS" data-UL="L">Bollinger Band Lower</option>
+                                <option value="open">Stock Open</option>
+                                <option value="0" selected disabled>Select Indicator 1</option>
+                            </select>
+                            <input id="type1period" type="number" value=2 class="mr-1 pb-2 pt-2 frm-text number">
+                            <select class="frm-text" id="stock2">
+                                <option value="SMA">Simple Moving Average</option>
+                                <option value="EMA">Exponential Moving Average</option>
+                                <option value="BBANDS" data-UL="U">Bollinger Band Upper</option>
+                                <option value="BBANDS" data-UL="L">Bollinger Band Lower</option>
+                                <option value="open">Stock Open</option>
+                                <option value="0" selected disabled>Select Indicator 2</option>
+                            </select>
+                            <input id="type2period" type="number" value=2 class="mr-1 pb-2 pt-2 frm-text number">
+                            <button onclick="updateScatter()" class="btn-dark btn">Update</button>
+                        </div>
+                        <div class="row mt-1">
+                            Use every <input id="frequency" type="number" value=2
+                                class="ml-1 mr-1 mb-1 frm-text number"> datapoint. Number every <input id="numfreq"
+                                type="number" value=3 class="ml-1 mr-1 mb-1 frm-text number"> points. Default width is
+                            <input id="defwidth" type="number" value=500 class="ml-1 mr-1 frm-text number"> .
+
+                        </div>
+                    </div class="row">
+                    <div id="conScatter">
+                    </div>
+                    <div id="errors" class=" hide alert alert-danger row mt-2" role="alert">
+                    </div>
+                    <div class="row">
+                        <button v-on:click="addtolist()" class="mt-2 btn-black w-100 btn-sm mb-1"><i
+                                class="material-icons md-18">add_box</i>Add to List</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="mt-2 row">
+        <template v-for="item in plots">
+            <div class="card border-thick resize-drag ml-1 mb-1" v-bind:data-plotid="[[item.id]]">
+                <div class="style-header cursor-normal">[[item.name]]
+                    <div class="float-sm-right mr-2"><button class="btn-sm btn-close" onclick="deleteplot(this)"> <i
+                                class="material-icons md-18">remove</i>Delete</button></div>
+                </div>
+                <div class="card-body cursor-normal zero-body">
+                    <div v-bind:id="item.id" class="plot">
+                        [[item.figure]]
+                    </div>
+                </div>
+            </div>
+
+        </template>
+
+
+    </div>
+</div>
+
+<div class="modal fade" id="stockmodal" role="dialog">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            {% include "stockselector.html" with selectors='true' %}
+        </div>
+    </div>
+</div>
+<!-- help dialog -->
+<div class="modal fade" id="scatterHelpDialog" role="dialog">
+    <div class="modal-dialog modal-wide">
+        <div class="modal-content">
+            <div class="modal-header header">
+                <h4 class="modal-title">How to Use Connected Scatterplots</h4>
+            </div>
+            <div class="modal-body">
+                1. Select the stock.
+                <hr>
+                2. Select indicator 1, and the period for the indicator. Then indicator 2 and the period for the
+                indicator.
+                <hr>
+                3. Enter how many datapoints to show on screen, how many datapoints to number and finally the initial
+                width of the graph.
+                <hr>
+                4. Adjust variables until graph looks as needed, follow from low numbers to high numbers to look at how
+                time is progressing, the x and y axis represent an indicator each. Hover mouse over point to get more
+                information.
+                <hr>
+                5. Add the Graph to list and adjust the size as needed by dragging it.
+                <hr>
+                Understanding it:<br>
+                A movement in the y value shows a movement in indicator 2, a movement in the x value shows a movement in
+                indicator 1.<br>
+                By observing the time progression you can get a quick idea of how the value of the stock is changing.
+                <br>
+                L shapes in data present sudden changes in the data <br>
+                Loops show that there is a temporal shift in the data <br>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- white space to make it easier to scroll-->
+<div class="addwhitespace"></div>
+
+<!-- Scatter JS-->
+{% load static%}
+<script type="text/javascript" src="{% static 'js/scatter.js' %}">
+</script>
+<script type=text/javascript> var srchURL="{% url 'search' %}" ; var sctrURL="{% url 'scatterget' %}" ; </script>
+    {% endblock %}

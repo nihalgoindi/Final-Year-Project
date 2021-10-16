@@ -1,0 +1,50 @@
+{% extends 'base.html' %}
+{% block title %}View Machine Learning Saved Data{% endblock %}
+{% load static%}
+<head>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <!--
+    <script>
+        $(document).ready(function(){
+          $("button").click(function(){
+            $.getJSON("{% static 'json/stocks.json' %}", function(data){
+            console.log(data.name); // Prints: Harry
+            data.name - "{{testName}}";
+            console.log(data.age); // Prints: 14
+            }).fail(function(){
+            console.log("An error has occurred.");
+            });
+          });
+        });
+    </script>
+    -->
+</head>
+
+{% block content %}
+
+
+<ul>
+    {% for model in models %}
+        <div style="padding: 22px; border-style: solid; width: 235px; display: inline-block;">
+        <li>{{ model.id }}</li>
+        <li>Stock: {{ model.stock }}</li>
+        <li>TimePeriod: {{ model.timePeriod }}</li>
+        <li>Prediction: {{ model.prediction }}</li>
+        <li>Prediction Accuracy: {{ model.accuracy }}</li>
+        <li>momentum_rsi: {{ model.momentum_rsi}}</li>
+        <li>trend_ema: {{ model.trend_ema}}</li>
+        <li>volume_emv: {{ model.volume_emv}}</li>
+        <li>trend_cci: {{ model.trend_cci}}</li>
+        <li>momentum_stoch: {{ model.momentum_stoch}}</li>
+        <li>trend_adx: {{ model.trend_adx}}</li>
+        <li>trend_macd: {{ model.trend_macd}}</li>
+        <li>volume_adi: {{ model.volume_adi}}</li>
+        
+        <a class="nav-link nav-link-color " href="{% url 'delData' id=model.id %}">Delete</a>
+        </div>
+    {% endfor %}
+</ul>
+
+
+
+{% endblock %}

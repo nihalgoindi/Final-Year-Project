@@ -1,0 +1,30 @@
+{% extends 'base.html' %}
+
+{% block title %}Sign Up{% endblock %}
+
+{% block content %}
+
+<div class="container">
+    <div class="row mr-1 ml-1">
+        <div class="mx-auto">
+            <div class="card scatwidth">
+                <div class="style-header pt-1 pb-1">
+                    <div class="row">
+                        <a class="mr-4 col">
+                            Sign up
+                        </a>
+                    </div>
+                </div>
+                <div id="scatterbody" class="card-body">
+                    <br>
+                    <form method="post">
+                        {% csrf_token %}
+                        {{ form.as_p }}
+                        <button type="submit">Sign up</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
