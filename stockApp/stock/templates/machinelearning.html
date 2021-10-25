@@ -9,39 +9,41 @@
 {% block content %}
 
 <div>
-<H2>
-    Stock: 
-    {% autoescape off %}
-    {{ stock }}
-    {% endautoescape %}
-</H2> 
+    <H2>
+        Stock:
+        {% autoescape off %}
+        {{ stock }}
+        {% endautoescape %}
+    </H2>
 
-<H2>
-    Timeperiod: 
-    {% autoescape off %}
-    {{ timeperiod }}
-    {% endautoescape %}
-</H2>
+    <H2>
+        Timeperiod:
+        {% autoescape off %}
+        {{ timeperiod }}
+        {% endautoescape %}
+    </H2>
 </div>
 
 <a class="btn btn-outline-secondary col-sm-4" onclick="helpTradDialog()"><span
-    class="material-icons md-22">search</span>Click here to choose a stock and time period.</a>
+        class="material-icons md-22">search</span>Click here to choose a stock and time period.</a>
 
-<div> <h3></h3></div>
 <div>
-<a class="btn btn-outline-secondary col-sm-4" href="{% url 'setData' stock=stock  timeperiod=timeperiod %}"><span
-    class="material-icons md-22">save_alt</span>Save Model Data</a>
-<a class="btn btn-outline-secondary col-sm-4" href="{% url 'viewMLData' %}" target="_blank"><span
-    class="material-icons md-22">view_list</span>View Saved Data</a>
+    <h3></h3>
+</div>
+<div>
+    <a class="btn btn-outline-secondary col-sm-4" href="{% url 'setData' stock=stock  timeperiod=timeperiod %}"><span
+            class="material-icons md-22">save_alt</span>Save Model Data</a>
+    <a class="btn btn-outline-secondary col-sm-4" href="{% url 'viewMLData' %}" target="_blank"><span
+            class="material-icons md-22">view_list</span>View Saved Data</a>
 </div>
 
 
 
-    {% load plotly_dash %}
+{% load plotly_dash %}
 
-    <div class="{% plotly_class name='VisualData' %}">
-        {% plotly_app name='VisualData' ratio=1 %}
-    </div>
+<div class="{% plotly_class name='VisualData' %}">
+    {% plotly_app name='VisualData' ratio=1 %}
+</div>
 
 
 
@@ -50,20 +52,20 @@
 <!-- help dialog -->
 <div class="modal fade" id="tradhelpmodal" role="dialog">
     <div class="modal-dialog modal-lg">
-      <div class="modal-content">
-        <div class="modal-header header">
-          <h4 class="modal-title">Choose which stock to query and the time period to query over.</h4>
-        </div>
-        <div class="modal-body">
+        <div class="modal-content">
+            <div class="modal-header header">
+                <h4 class="modal-title">Choose which stock to query and the time period to query over.</h4>
+            </div>
+            <div class="modal-body">
                 <div id="searchResult" class="">
                     <div class="card card-main card-body pb-2">
                         <div class="row">
-                            <input id="searchField" class="col-sm-7 mr-1 ml-1 form-control" type="search" placeholder="Find..."
-                                aria-label="search" name="ticker">
+                            <input id="searchField" class="col-sm-7 mr-1 ml-1 form-control" type="search"
+                                placeholder="Find..." aria-label="search" name="ticker">
                             <button id="srchbtn" class="btn btn-outline-secondary col-sm-4" type="submit"
                                 v-on:click="search">Search</button>
                         </div>
-                
+
                         {% if selectors %}
                         <div id="searchSelectors" class="row mt-1">
                             <input id="daterange" class="frm-text col-sm-7 mr-1 ml-1">
@@ -87,7 +89,7 @@
                             </div>
                             <p>Time period:</p>
                             <select class="frm-text" aria-label="timeframe selector" id="timeFrame">
-                                
+
                                 <option id="value1" value='1'>1</option>
                                 <option id="value10" value='10'>10</option>
                                 <option id="value30" value='30'>30</option>
@@ -96,9 +98,10 @@
                             </select>
                             <p>Stock:</p>
                             <template v-for="item in stocks">
-                                <button :id='[[item.symbol]]' :class="{clickedSymb:item.symbol == selected, oldClickedSymb:item.old}"
+                                <button :id='[[item.symbol]]'
+                                    :class="{clickedSymb:item.symbol == selected, oldClickedSymb:item.old}"
                                     class="card w-100 mb-2 card-body searchItem"
-                                    @click="$set(item, 'old', true); selected = item.symbol" onclick="window.location.href=('http://188.166.152.174:8000/%5Emachinelearning/(%3FP'.concat(this.id)
+                                    @click="$set(item, 'old', true); selected = item.symbol" onclick="window.location.href=('http://127.0.0.1:8000/%5Emachinelearning/(%3FP'.concat(this.id)
                                     .concat('%5Cw+)/(%3FP'.concat(timeFrame.value).concat( '%5Cw+)/$')))">
                                     <div class="row">
                                         <a class="text-left mr-2">[[item.symbol]]</a>
@@ -108,24 +111,23 @@
                                 </button>
                             </template>
                             <p>
-                                In order to see the projection of a stock first select the Time period for the projection and then the stock which will reload the page.
+                                In order to see the projection of a stock first select the Time period for the
+                                projection and then the stock which will reload the page.
                             </p>
                         </div>
                     </div>
                 </div>
-            
+
+            </div>
         </div>
-      </div>
     </div>
-  </div>
+</div>
 
 <script src="{% static 'js/machinelearning.js' %}"></script>
 <script type="text/javascript" src="{% static 'js/stockselector.js' %}"></script>
 
 <script>
-    var srchURL = "{% url 'search' %}";   
+    var srchURL = "{% url 'search' %}";
 </script>
 
 {% endblock %}
-
-
