@@ -46,7 +46,7 @@ def testStrategy(request):
     stockData = convertApi(getApiData(stock,dataType,dateFrom,dateTo))
     if not isinstance(stockData, pd.DataFrame):
         return JsonResponse({'table': "Error: Unable to download data, try using less.","error":1})
-    
+
     money = float(json.loads(request.body.decode('utf-8'))["params"]['money'])
     strategy = str(json.loads(request.body.decode('utf-8'))["params"]['strategy'])
     sellingThreshold = int(json.loads(request.body.decode('utf-8'))["params"]['sellingThreshold'])*-1
@@ -57,7 +57,7 @@ def testStrategy(request):
     if not isinstance(workedDF, pd.DataFrame):
         return JsonResponse({'table': "Error:"+workedDF,'money':money,"error":2})
     if not hadonetrade:
-            return JsonResponse({'table': workedDF.to_json(orient="records"),'money':money,"error":3})
+        return JsonResponse({'table': workedDF.to_json(orient="records"),'money':money,"error":3})
     return JsonResponse({'table': workedDF.to_json(orient="records"),'money':money,"error":0})
 
 
@@ -78,7 +78,7 @@ def calculateStrategy(data,strategySteps,money,sellTrh,buyTrh):
                 if(name == "BBANDS"):
                     indName = i[1]+' '+str(i[2].split('.')[0])+" U"
                     indName2 = i[1]+' '+str(i[2].split('.')[0])+" L"
-                
+
                     if not indName in data.columns:
                         data = ind.getIndicator(data,i[1],i[2])
                 elif(name != 'STOCK' and name != "NUM"):
@@ -91,7 +91,7 @@ def calculateStrategy(data,strategySteps,money,sellTrh,buyTrh):
     data['money'] = money
     data['total'] = money
     data['profit'] = 0.0
-    data['inifTrue'] = 0    
+    data['inifTrue'] = 0
 
     inif = False
     ifbool = False
@@ -110,12 +110,12 @@ def calculateStrategy(data,strategySteps,money,sellTrh,buyTrh):
                     inif = True
                     ifexplain = step.split(":")
                     ifrulecount = 0
-                    data['inifTrue'] = 0 
+                    data['inifTrue'] = 0
 
                     iftype = ifexplain[1]
                     ifnum = ifexplain[2]
                     ifbool = ifexplain[3] == "T"
-                    
+
                 else:
                     #calculate buysell values from rule
                     final,buyorsell = parseRule(step,data)
@@ -183,7 +183,7 @@ def calculateValue(df,money,buystrength,sellstrength):
                     hasbuy = True
                     hadonetrade = True
                     #count possible number of stock
-                    df.at[i,'newTransaction'] = True 
+                    df.at[i,'newTransaction'] = True
                     newcount = prevstockcount + canafford
                     df.at[i,'stockcount'] = newcount
                     #count value of stock and remaining money
@@ -203,7 +203,7 @@ def calculateValue(df,money,buystrength,sellstrength):
             elif(row.buysell <= sellstrength):
                 if(hasbuy):
                     hasbuy = False
-                    df.at[i,'newTransaction'] = True 
+                    df.at[i,'newTransaction'] = True
                     hadonetrade = True
                     #if we have stocks how much are they worth
                     sellvalue = round((prevstockcount*row.open),2)
@@ -240,7 +240,7 @@ def parseRule(step,data):
     # handle rule combination
     if buyorsellblock.startswith("SELL"):
         buyorsell = buyorsell*  -1
-    
+
     first = True
     for i in range(0,len(connectors),1):
         if (len(connectors) > 1) and not first:
@@ -282,9 +282,9 @@ def processRule(data, parts):
             elif(name != "BBANDS" and name != "NUM" ):
                 rules.append((i[1]+' '+str(i[2].split('.')[0])))
             elif(name == 'BBANDS'):
-                    n = i[2].split('.')[0]
-                    band = " U" if i[2].split('.')[1] == "U" else " L"
-                    rules.append(('BBANDS '+str(n)+ band))
+                n = i[2].split('.')[0]
+                band = " U" if i[2].split('.')[1] == "U" else " L"
+                rules.append(('BBANDS '+str(n)+ band))
             elif(name == "NUM"):
                 data['NUM'] = int(i[2])
                 rules.append("NUM")
@@ -350,7 +350,7 @@ def getGraph(request):
             if not isinstance(data, pd.DataFrame):
                 return JsonResponse({'graph': "ERROR: Could not get data - unable to convert into dataframe. Maybe too much data at once","error":1})
             indicatorNames = []
-            
+
             #parse indicator string and add indicators
             if indicators != "":
                 indicators = indicators.split(',')
@@ -372,9 +372,9 @@ def getGraph(request):
 
                         if not indCheck in data.columns:
                             indicatorNames.append((indName,color1,color2))
-                            data = ind.getIndicator(data,i[0],i[1])  
-                            #print (data)              
-            
+                            data = ind.getIndicator(data,i[0],i[1])
+                            #print (data)
+
         except Exception as e:
             data = "Error: "+ str(e)
             return JsonResponse({'graph': "Unable to compute, please try less data <br> advanced:"+data,"error":'1'})
@@ -404,7 +404,7 @@ def search(request):
         #check if empty symbols
         if(Symbol.objects.exists() == 0):
             print("Populating Symbols")
-        
+
         try:
             searchResp = getTickers(search)
 
@@ -417,7 +417,7 @@ def search(request):
         except Exception as e:
             searchResp = "Error:"+str(e)
             errcode = 2
-    
+
     return JsonResponse({'data':searchResp,'error':errcode})
 
 
@@ -429,6 +429,11 @@ def checkType(row):
 
 def rulebuilding(request):
     return render(request,'rules.html')
+
+
+def rulebuilding2(request):
+    return render(request, 'rules2.html')
+
 
 def deleteRule(request):
     if request.user.is_anonymous:
@@ -512,7 +517,7 @@ def saveStrat(request):
     name =str(json.loads(request.body.decode('utf-8'))["params"]['name'])
     html =str(json.loads(request.body.decode('utf-8'))["params"]['html'])
     strategy =str(json.loads(request.body.decode('utf-8'))["params"]['strategy'])
-    
+
     try:
         s= Strategy(user = request.user, name=name,strategy=strategy,html=html)
         s.full_clean()
@@ -564,7 +569,7 @@ def scatterget(request):
             data = convertApi(getApiData(symb=symb.symbol,timeFrame=dataType,datefrom=dateFrom,dateto=dateTo))
             if not isinstance(data, pd.DataFrame):
                 return JsonResponse({'table': "ERROR: Could not get data - may be too many dates.","error":1})
-                
+
             #add indicators
             if indicator1 != 'open':
                 data = ind.getIndicator(data,indicator1,period1)
@@ -581,7 +586,7 @@ def scatterget(request):
     else:
         return JsonResponse({'table': "wrong request","error":1})
 
- 
+
 
 def getTickers(search):
     from stock.models import Symbol
@@ -613,12 +618,12 @@ def updateAllTickers():
     for item in api:
         if not Symbol.objects.filter(symbol=item['symbol']).exists():
             Symbol.objects.update_or_create(symbol=item['symbol'], exchange=exchange, name=item['description'], dataType="Stock",date=datetime.now(timezone.utc))
-    
+
     #remove testing tickers
     Symbol.objects.filter(symbol="NTEST").delete()
     Symbol.objects.filter(symbol="NTEST-A").delete()
     Symbol.objects.filter(symbol="NTEST-B").delete()
-    Symbol.objects.filter(symbol="NTEST-C").delete()        
+    Symbol.objects.filter(symbol="NTEST-C").delete()
     return True
 
 def saveStock(symbol,data):
@@ -652,22 +657,22 @@ def stock_data(data):
 
 def machine_learning(request, stock, timeperiod):
     rdm_model = Forest(stock, ['momentum_rsi', 'trend_ema_fast', 'volume_em', 'trend_cci', 'momentum_stoch', 'trend_adx', 'trend_macd', 'volume_adi'], timeperiod)
-    
+
     date = None
 
     if date is None:
-        d = rdm_model.data.index.tolist()[-1] 
+        d = rdm_model.data.index.tolist()[-1]
     else:
         d = date['points'][0]['x']
 
-    
+
     x = rdm_model.data.index.tolist()
     y = rdm_model.data['Adj_Close']
 
     fig = go.Figure(data=go.Scatter(x=x, y=y, mode='lines', showlegend=False))
     fig.update_layout(title=stock, xaxis={'title': 'Date'}, yaxis={'title': 'Closing Price ($)'})
 
-    
+
     x = x[-1]
     y = y[-1]
 
@@ -689,7 +694,7 @@ def machine_learning(request, stock, timeperiod):
     print(testTable['Features'])
 
 
-    
+
     request.session['stock'] = stock
     request.session['timeperiod'] = timeperiod
     request.session['modelPred'] = fig_pred
@@ -733,24 +738,24 @@ def viewData(request):
         with open(url, 'w') as outfile:
             json.dump(data, outfile)
 
-    
+
     with open(url) as json_file:
         data = json.load(json_file)
         print (len(data['models']))
         for p in data["models"]:
-            rdm_data = modeldata(p["id"], p["stock"], p["timeperiod"], p["pred"], p["acu"], p["momentum_rsi"], 
-                                 p["trend_ema"], p["volume_emv"], p["trend_cci"], p["momentum_stoch"], 
+            rdm_data = modeldata(p["id"], p["stock"], p["timeperiod"], p["pred"], p["acu"], p["momentum_rsi"],
+                                 p["trend_ema"], p["volume_emv"], p["trend_cci"], p["momentum_stoch"],
                                  p["trend_adx"], p["trend_macd"], p["volume_adi"])
             models.append(rdm_data)
-    
-   
+
+
     return render(request,"data.html", context={'models': models})
 
 def setData(request, stock, timeperiod):
     #Redirect to login if no user
     if not (request.user.is_authenticated):
         return redirect('%s?next=%s' % (settings.LOGIN_URL, request.path))
-    
+
     fig_pred = str(request.session['modelPred'])
     fig_acu = (request.session['modelAcu'])
     fig_acu = "{:.2f}".format(fig_acu)
@@ -762,13 +767,13 @@ def setData(request, stock, timeperiod):
     trend_ema = "{:.3f}".format(trend_ema)
     volume_emv = request.session['django_plotly_dash']['volume_emv']
     volume_emv = "{:.3f}".format(volume_emv)
-    trend_cci = request.session['django_plotly_dash']['trend_cci'] 
+    trend_cci = request.session['django_plotly_dash']['trend_cci']
     trend_cci = "{:.3f}".format(trend_cci)
-    momentum_stoch = request.session['django_plotly_dash']['momentum_stoch'] 
+    momentum_stoch = request.session['django_plotly_dash']['momentum_stoch']
     momentum_stoch = "{:.3f}".format(momentum_stoch)
-    trend_adx = request.session['django_plotly_dash']['trend_adx'] 
+    trend_adx = request.session['django_plotly_dash']['trend_adx']
     trend_adx = "{:.3f}".format(trend_adx)
-    trend_macd = request.session['django_plotly_dash']['trend_macd'] 
+    trend_macd = request.session['django_plotly_dash']['trend_macd']
     trend_macd = "{:.3f}".format(trend_macd)
     volume_adi = request.session['django_plotly_dash']['volume_adi']
     volume_adi = "{:.3f}".format(volume_adi)
@@ -786,12 +791,12 @@ def setData(request, stock, timeperiod):
         with open(url, 'w') as outfile:
             json.dump(data, outfile)
 
-    with open(url) as json_file: 
-        data = json.load(json_file) 
+    with open(url) as json_file:
+        data = json.load(json_file)
         index = str((len(data['models'])) + 1)
-        temp = data['models'] 
-  
-        # python object to be appended 
+        temp = data['models']
+
+        # python object to be appended
         x = {
             "id":index,
             "stock":stock,
@@ -800,35 +805,35 @@ def setData(request, stock, timeperiod):
             "acu":fig_acu,
             "momentum_rsi":momentum_rsi,
             "trend_ema":trend_ema,
-            "volume_emv":volume_emv, 
+            "volume_emv":volume_emv,
             "trend_cci":trend_cci,
             "momentum_stoch":momentum_stoch,
             "trend_adx":trend_adx,
             "trend_macd":trend_macd,
             "volume_adi":volume_adi
         }
-  
-  
-    # appending data to emp_details  
-    temp.append(x) 
-      
-    write_json(data, url) 
-    
-   
+
+
+    # appending data to emp_details
+    temp.append(x)
+
+    write_json(data, url)
+
+
     return redirect('machinelearning', stock, timeperiod)
 
 def delData(request, id):
     i = 0
     print(id)
     sid = int(id)
-   
+
     models = []
     url = 'stock/static/json/' + request.user.username + '.json'
     url = os.path.join(settings.BASE_DIR, url)
-    
+
     with open(url) as json_file:
         data = json.load(json_file)
-        
+
         for p in data["models"]:
             if p["id"] == id:
                 print ("test: " + str(i))
@@ -840,9 +845,9 @@ def delData(request, id):
 
     return redirect('viewMLData')
 
-def write_json(data, filename): 
-    with open(filename,'w') as f: 
-        json.dump(data, f, indent=4) 
+def write_json(data, filename):
+    with open(filename,'w') as f:
+        json.dump(data, f, indent=4)
 
 def generate_feature_importance(rdm_model):
 

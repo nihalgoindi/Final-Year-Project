@@ -69,6 +69,10 @@
             <li class="nav-item">
               <a class="nav-link nav-link-color " href="{% url 'machinelearning' stock='MSFT' timeperiod=1 %}">Machine-Learning</a>
           </ul>
+          <ul class="navbar-nav mr-auto">
+            <li class="nav-item">
+              <a class="nav-link nav-link-color " href="{% url 'rulebuilding2' %}">Rule-Building-2</a>
+          </ul>
           <div class="navbar-text">
             <ul class="navbar-nav">
               {% if user.is_authenticated %}

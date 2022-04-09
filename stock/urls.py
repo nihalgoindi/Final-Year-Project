@@ -14,6 +14,7 @@ urlpatterns = [
     path('deleteRule', views.deleteRule, name="deleteRule"),
     path('deleteStrat', views.deleteStrat, name="deleteStrat"),
     path('rulebuilding', views.rulebuilding, name="rulebuilding"),
+    path('rulebuilding2', views.rulebuilding2, name="rulebuilding2"),
     path('scatterget', views.scatterget, name="scatterget"),
     path('scatterPlot', views.scatter, name="scatterPlot"),
     path(r'^machinelearning/(?P<stock>\w+)/(?P<timeperiod>\w+)/$', views.machine_learning, name="machinelearning"),
