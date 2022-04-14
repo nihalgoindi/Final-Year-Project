@@ -431,8 +431,15 @@ def rulebuilding(request):
     return render(request,'rules.html')
 
 
-def rulebuilding2(request):
-    return render(request, 'rules2.html')
+def newRuleBuilder(request):
+    return render(request, 'newRuleBuilder.html')
+
+def strategyBuilder(request):
+    return render(request, 'strategyBuilder.html')
+
+
+def strategyTester(request):
+    return render(request, 'strategyTester.html')
 
 
 def deleteRule(request):

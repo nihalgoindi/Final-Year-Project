@@ -70,8 +70,18 @@
               <a class="nav-link nav-link-color " href="{% url 'machinelearning' stock='MSFT' timeperiod=1 %}">Machine-Learning</a>
           </ul>
           <ul class="navbar-nav mr-auto">
-            <li class="nav-item">
-              <a class="nav-link nav-link-color " href="{% url 'rulebuilding2' %}">Rule-Building-2</a>
+            <div class="dropdown show">
+              <a class="btn btn-secondary dropdown-toggle" href="#" role="button" id="dropdownMenuLink" data-toggle="dropdown"
+                aria-haspopup="true" aria-expanded="false">
+                Rule-Building-2
+              </a>
+            
+              <div class="dropdown-menu" aria-labelledby="dropdownMenuLink">
+                <a class="dropdown-item" href="{% url 'newRuleBuilder' %}">Rule Builder</a>
+                <a class="dropdown-item" href="{% url 'strategyBuilder' %}">Strategy Builder</a>
+                <a class="dropdown-item" href="{% url 'strategyTester' %}">Strategy Tester</a>
+              </div>
+            </div>
           </ul>
           <div class="navbar-text">
             <ul class="navbar-nav">
