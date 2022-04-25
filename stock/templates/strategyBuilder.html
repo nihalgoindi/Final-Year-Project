@@ -1,47 +1,55 @@
 {% extends 'base.html' %}
 {% block title %}NEW Rule Builder{% endblock %}
 
-
-
 {% block content %}
 
-{% if not user.is_authenticated %}
 <div class="alert alert-warning alert-dismissible fade show  mr-4 ml-4" role="alert">
-    You need to <a class="linkc alert-link text-light-thick" href="{% url 'login' %}">Login</a> or <a
-        class="linkc alert-link text-light-thick" href="{% url 'signup' %}">Register</a> to save rules and strategies
-    permanently.
+    This feature does not currently have the functionality to save rules permanently.
     <button type="button" class="close" data-dismiss="alert" aria-label="Close">
         <span aria-hidden="true">&times;</span>
     </button>
 </div>
-{% endif %}
-
-<div class="row ml-2 mr-1">
-    <a class="btn btn-outline-secondary col-sm-4" href="{% url 'viewMLData' %}" target="_blank">View Saved Data</a>
-</div>
 
 <div>
     <h3>Strategy Builder</h3>
-    <div id="blocklyDiv" style="height: 480px; width: 800px;"></div>
-    <xml id="toolbox" style="display: none">
-        <block type="controls_repeat_ext">
-            <value name="TIMES">
-                <shadow type="math_number">
-                    <field name="NUM">5</field>
-                </shadow>
-            </value>
-        </block>
+    <div>
+        <button type="button" class="btn btn-primary" id="save">Save Workspace</button>
+        <button type="button" class="btn btn-primary" id="clear">Clear Workspace</button>
+    </div>
+    <div id="blocklyDiv" style="height: 480px; width: 1000px;"></div>
+    <xml xmlns="https://developers.google.com/blockly/xml" id="toolbox" style="display: none">
+        <category name="Frame">
+            <block type="strategyframe"></block>
+        </category>
+        <category name="Rules">
+            <block type="buyrule"></block>
+            <block type="sellrule"></block>
+        </category>
+        <category name="Final">
+            <block type="end"></block>
+        </category>
     </xml>
+    <xml xmlns="https://developers.google.com/blockly/xml" id="workspaceBlocks" style="display: none"></xml>
 </div>
 
+<button type="button" class="btn btn-danger" id="Strategy1" disabled>Strategy 1</button>
+<button type="button" class="btn btn-danger" id="Strategy2" disabled>Strategy 2</button>
+<button type="button" class="btn btn-danger" id="Strategy3" disabled>Strategy 3</button>
+<button type="button" class="btn btn-danger" id="Strategy4" disabled>Strategy 4</button>
+<button type="button" class="btn btn-danger" id="Strategy5" disabled>Strategy 5</button>
+<button type="button" class="btn btn-primary" id="ClearAll">Clear All Saved Strategies</button>
 
+
+</div>
 
 
 
 <!-- RuleBuilder JS-->
 {% load static%}
 
-<script src="https://unpkg.com/blockly/blockly.min.js"></script>
+<script type="text/javascript" src="{% static 'blockly/blockly_compressed.js' %}"></script>
+<script type="text/javascript" src="{% static 'blockly/blocks_compressed.js' %}"></script>
+<script type="text/javascript" src="{% static 'blockly/msg/js/en.js' %}"></script>
 <script type="text/javascript" src="{% static 'js/strategyBuilder.js' %}"></script>
 
 {% endblock %}

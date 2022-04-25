@@ -16,7 +16,6 @@ urlpatterns = [
     path('rulebuilding', views.rulebuilding, name="rulebuilding"),
     path('newRuleBuilder', views.newRuleBuilder, name="newRuleBuilder"),
     path('strategyBuilder', views.strategyBuilder, name="strategyBuilder"),
-    path('strategyTester', views.strategyTester, name="strategyTester"),
     path('scatterget', views.scatterget, name="scatterget"),
     path('scatterPlot', views.scatter, name="scatterPlot"),
     path(r'^machinelearning/(?P<stock>\w+)/(?P<timeperiod>\w+)/$',

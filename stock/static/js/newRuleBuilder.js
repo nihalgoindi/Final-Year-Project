@@ -1,4 +1,4 @@
-/* TODO: Change toolbox XML ID if necessary. Can export toolbox XML from Workspace Factory. */
+/* Toolbox definition */
 var toolbox = document.getElementById("toolbox");
 
 var options = { 
@@ -18,12 +18,9 @@ var options = {
 	oneBasedIndex : true
 };
 
-/* Inject your workspace */ 
+/* Inject workspace */ 
 var workspace = Blockly.inject(blocklyDiv, options);
 
-/* Load Workspace Blocks from XML to workspace. Remove all code below if no blocks to load */
-
-/* TODO: Change workspace blocks XML ID if necessary. Can export workspace blocks XML from Workspace Factory. */
 var workspaceBlocks = document.getElementById("workspaceBlocks"); 
 
 /* Load blocks to workspace. */
@@ -207,3 +204,86 @@ Blockly.defineBlocksWithJsonArray([
 		"helpUrl": ""
 	}
 ]);
+
+rule1Button = document.getElementById('Rule1');
+rule1Button.addEventListener('click', function () { load(rule1Button); });
+
+rule2Button = document.getElementById('Rule2');
+rule2Button.addEventListener('click', function () { load(rule2Button); });
+
+rule3Button = document.getElementById('Rule3');
+rule3Button.addEventListener('click', function () { load(rule3Button); });
+
+rule4Button = document.getElementById('Rule4');
+rule4Button.addEventListener('click', function () { load(rule4Button); });
+
+rule5Button = document.getElementById('Rule5');
+rule5Button.addEventListener('click', function () { load(rule5Button); });
+
+rule6Button = document.getElementById('Rule6');
+rule6Button.addEventListener('click', function () { load(rule6Button); });
+
+rule7Button = document.getElementById('Rule7');
+rule7Button.addEventListener('click', function () { load(rule7Button); });
+
+rule8Button = document.getElementById('Rule8');
+rule8Button.addEventListener('click', function () { load(rule8Button); });
+
+rule9Button = document.getElementById('Rule9');
+rule9Button.addEventListener('click', function () { load(rule9Button); });
+
+rule10Button = document.getElementById('Rule10');
+rule10Button.addEventListener('click', function () { load(rule10Button); });
+
+buttonArray = [rule1Button, rule2Button, rule3Button, rule4Button, rule5Button, rule6Button, rule7Button,
+		rule8Button, rule9Button, rule10Button];
+
+saveButton = document.getElementById('save');
+saveButton.addEventListener('click', function(){ save(); });
+
+clearButton = document.getElementById('clear');
+clearButton.addEventListener('click', function () { clear(); });
+
+clearAllButton = document.getElementById('ClearAll');
+clearAllButton.addEventListener('click', function () { clearAll(); });
+
+function save(){
+	var xmlDom = Blockly.Xml.workspaceToDom(Blockly.mainWorkspace);
+	var xmlText = Blockly.Xml.domToPrettyText(xmlDom);
+	var availableSpace;
+	for (let i = 0; i <  buttonArray.length; i++){
+		if (buttonArray[i].hasAttribute("disabled")){
+			availableSpace = buttonArray[i];
+			break;
+		}
+	}
+	availableSpace.removeAttribute("disabled");
+	availableSpace.setAttribute("class", "btn btn-success");
+	localStorage.setItem(availableSpace.id, xmlText);
+}
+
+function load(button){
+	var xmlText = localStorage.getItem(button.id);
+	if (xmlText) {
+		Blockly.mainWorkspace.clear();
+		xmlDom = Blockly.Xml.textToDom(xmlText);
+		Blockly.Xml.domToWorkspace(Blockly.mainWorkspace, xmlDom);
+		button.setAttribute("disabled","disabled");
+		button.setAttribute("class", "btn btn-danger");
+		localStorage.removeItem(button.id);
+	}
+}
+
+function clear(){
+	Blockly.mainWorkspace.clear();
+}
+
+function clearAll() {
+	for (let i = 0; i < buttonArray.length; i++) {
+		if (!(buttonArray[i].hasAttribute("disabled"))) {
+			buttonArray[i].setAttribute("disabled", "disabled");
+			buttonArray[i].setAttribute("class", "btn btn-danger");
+			localStorage.removeItem(buttonArray[i].id);
+		}
+	}
+}
