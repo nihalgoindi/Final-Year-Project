@@ -431,15 +431,11 @@ def rulebuilding(request):
     return render(request,'rules.html')
 
 
-def newRuleBuilder(request):
-    return render(request, 'newRuleBuilder.html')
+def ruleBuilderNew(request):
+    return render(request, 'ruleBuilderNew.html')
 
 def strategyBuilder(request):
     return render(request, 'strategyBuilder.html')
-
-
-def strategyTester(request):
-    return render(request, 'strategyTester.html')
 
 
 def deleteRule(request):
