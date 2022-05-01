@@ -456,12 +456,12 @@ function save() {
     for (let i = 0; i < buttonArray.length; i++) {
         if (buttonArray[i].hasAttribute("disabled")) {
             availableSpace = buttonArray[i];
+            availableSpace.removeAttribute("disabled");
+            availableSpace.setAttribute("class", "btn btn-success");
+            localStorage.setItem(availableSpace.id, xmlText);
             break;
         }
-    }
-    availableSpace.removeAttribute("disabled");
-    availableSpace.setAttribute("class", "btn btn-success");
-    localStorage.setItem(availableSpace.id, xmlText);
+    }  
 }
 
 function load(button) {
