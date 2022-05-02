@@ -53,20 +53,11 @@ Blockly.defineBlocksWithJsonArray([
         "args0": [
             {
                 "type": "input_value",
-                "name": "NAME",
-                "check": [
-                    "comparator_e_gt_lt",
-                    "comparator_crosses"
-                ]
+                "name": "if"
             },
             {
                 "type": "input_statement",
-                "name": "NAME",
-                "check": [
-                    "final_buy",
-                    "final_sell"
-                ],
-                "align": "RIGHT"
+                "name": "then"
             }
         ],
         "previousStatement": "rule_frame",
@@ -399,7 +390,6 @@ Blockly.defineBlocksWithJsonArray([
     {
         "type": "final_buy",
         "message0": "BUY",
-        "inputsInline": false,
         "previousStatement": "if_do",
         "colour": 120,
         "tooltip": "",

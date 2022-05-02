@@ -432,7 +432,7 @@ def rulebuilding(request):
 
 
 def ruleBuilderNew(request):
-    return render(request, 'ruleBuilderNew.html')
+    return render(request, 'ruleBuilder2.html')
 
 def strategyBuilder(request):
     return render(request, 'strategyBuilder.html')
