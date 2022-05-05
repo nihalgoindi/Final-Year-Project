@@ -1,3 +1,9 @@
+/*Author Niahal Singh Goindi - 
+for next student implementing:
+would advise looking at rulebuilder.js to see how 
+Rokas implemented the strategy testing when it comes to implementing it 
+with the new rule builder! /
+
 /* Toolbox definition */
 var toolbox = document.getElementById("toolbox");
 

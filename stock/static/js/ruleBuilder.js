@@ -417,7 +417,8 @@ var sellRules = new Vue({
         },
         edit: function (item, index) {
             $("#rule-builder").html(item.html);
-            $("#savebtn").prop("disabled", false);
+            $("#savebtn").prop("disabled", 
+            false);
 
         },
         addItem: function (item) {

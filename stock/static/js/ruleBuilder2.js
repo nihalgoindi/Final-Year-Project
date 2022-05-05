@@ -1,3 +1,5 @@
+/*Author - Nihal Singh Goindi */ 
+
 /* Toolbox definition */
 var toolbox = document.getElementById("toolbox");
 
